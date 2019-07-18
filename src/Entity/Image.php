@@ -26,21 +26,6 @@ class Image
      */
     private $src;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Player", mappedBy="image", cascade={"persist", "remove"})
-     */
-    private $player;
-
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Team", mappedBy="image", cascade={"persist", "remove"})
-     */
-    private $teamLogo;
-
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Product", mappedBy="image", cascade={"persist", "remove"})
-     */
-    private $product;
-
     public function getId(): ?int
     {
         return $this->id;
@@ -66,60 +51,6 @@ class Image
     public function setSrc(string $src): self
     {
         $this->src = $src;
-
-        return $this;
-    }
-
-    public function getPlayer(): ?Player
-    {
-        return $this->player;
-    }
-
-    public function setPlayer(?Player $player): self
-    {
-        $this->player = $player;
-
-        // set (or unset) the owning side of the relation if necessary
-        $newImage = $player === null ? null : $this;
-        if ($newImage !== $player->getImage()) {
-            $player->setImage($newImage);
-        }
-
-        return $this;
-    }
-
-    public function getTeamLogo(): ?Team
-    {
-        return $this->teamLogo;
-    }
-
-    public function setTeamLogo(?Team $teamLogo): self
-    {
-        $this->teamLogo = $teamLogo;
-
-        // set (or unset) the owning side of the relation if necessary
-        $newImage = $teamLogo === null ? null : $this;
-        if ($newImage !== $teamLogo->getImage()) {
-            $teamLogo->setImage($newImage);
-        }
-
-        return $this;
-    }
-
-    public function getProduct(): ?Product
-    {
-        return $this->product;
-    }
-
-    public function setProduct(?Product $product): self
-    {
-        $this->product = $product;
-
-        // set (or unset) the owning side of the relation if necessary
-        $newImage = $product === null ? null : $this;
-        if ($newImage !== $product->getImage()) {
-            $product->setImage($newImage);
-        }
 
         return $this;
     }

@@ -24,19 +24,19 @@ class Player
     private $name;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Team", inversedBy="imageId")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Team", inversedBy="players")
      */
-    private $equipe;
+    private $team;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Image", inversedBy="player", cascade={"persist", "remove"})
-     */
-    private $image;
-
-    /**
-     * @ORM\OneToMany(targetEntity="Orders", mappedBy="playerId")
+     * @ORM\OneToMany(targetEntity="App\Entity\Orders", mappedBy="player")
      */
     private $orders;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Image")
+     */
+    private $picture;
 
     public function __construct()
     {
@@ -60,26 +60,14 @@ class Player
         return $this;
     }
 
-    public function getEquipeId(): ?Team
+    public function getTeam(): ?Team
     {
-        return $this->equipeId;
+        return $this->team;
     }
 
-    public function setEquipeId(?Team $equipeId): self
+    public function setTeam(?Team $team): self
     {
-        $this->equipeId = $equipeId;
-
-        return $this;
-    }
-
-    public function getImageId(): ?Image
-    {
-        return $this->imageId;
-    }
-
-    public function setImageId(?Image $imageId): self
-    {
-        $this->imageId = $imageId;
+        $this->team = $team;
 
         return $this;
     }
@@ -96,7 +84,7 @@ class Player
     {
         if (!$this->orders->contains($order)) {
             $this->orders[] = $order;
-            $order->setPlayerId($this);
+            $order->setPlayer($this);
         }
 
         return $this;
@@ -107,34 +95,22 @@ class Player
         if ($this->orders->contains($order)) {
             $this->orders->removeElement($order);
             // set the owning side to null (unless already changed)
-            if ($order->getPlayerId() === $this) {
-                $order->setPlayerId(null);
+            if ($order->getPlayer() === $this) {
+                $order->setPlayer(null);
             }
         }
 
         return $this;
     }
 
-    public function getEquipe(): ?Team
+    public function getPicture(): ?Image
     {
-        return $this->equipe;
+        return $this->picture;
     }
 
-    public function setEquipe(?Team $equipe): self
+    public function setPicture(?Image $picture): self
     {
-        $this->equipe = $equipe;
-
-        return $this;
-    }
-
-    public function getImage(): ?Image
-    {
-        return $this->image;
-    }
-
-    public function setImage(?Image $image): self
-    {
-        $this->image = $image;
+        $this->picture = $picture;
 
         return $this;
     }

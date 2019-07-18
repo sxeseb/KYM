@@ -36,7 +36,7 @@ class Team implements UserInterface
     private $password;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
      */
     private $email;
 
@@ -56,18 +56,18 @@ class Team implements UserInterface
     private $tokenActive = false;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Player", mappedBy="equipeId")
+     * @ORM\OneToMany(targetEntity="App\Entity\Player", mappedBy="team")
      */
-    private $player;
+    private $players;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Image", inversedBy="teamLogo", cascade={"persist", "remove"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Image")
      */
-    private $image;
+    private $logo;
 
     public function __construct()
     {
-        $this->player = new ArrayCollection();
+        $this->players = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -199,16 +199,16 @@ class Team implements UserInterface
     /**
      * @return Collection|Player[]
      */
-    public function getPlayer(): Collection
+    public function getPlayers(): Collection
     {
-        return $this->player;
+        return $this->players;
     }
 
     public function addPlayer(Player $player): self
     {
-        if (!$this->player->contains($player)) {
-            $this->player[] = $player;
-            $player->setEquipeId($this);
+        if (!$this->players->contains($player)) {
+            $this->players[] = $player;
+            $player->setTeam($this);
         }
 
         return $this;
@@ -216,25 +216,25 @@ class Team implements UserInterface
 
     public function removePlayer(Player $player): self
     {
-        if ($this->player->contains($player)) {
-            $this->player->removeElement($player);
+        if ($this->players->contains($player)) {
+            $this->players->removeElement($player);
             // set the owning side to null (unless already changed)
-            if ($player->getEquipeId() === $this) {
-                $player->setEquipeId(null);
+            if ($player->getTeam() === $this) {
+                $player->setTeam(null);
             }
         }
 
         return $this;
     }
 
-    public function getImage(): ?Image
+    public function getLogo(): ?Image
     {
-        return $this->image;
+        return $this->logo;
     }
 
-    public function setImage(?Image $image): self
+    public function setLogo(?Image $logo): self
     {
-        $this->image = $image;
+        $this->logo = $logo;
 
         return $this;
     }

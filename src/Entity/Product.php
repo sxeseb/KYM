@@ -29,12 +29,12 @@ class Product
     private $price;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Image", inversedBy="product", cascade={"persist", "remove"})
+     * @ORM\Column(type="boolean")
      */
-    private $image;
+    private $available;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Orders", mappedBy="product")
+     * @ORM\OneToMany(targetEntity="App\Entity\Orders", mappedBy="product")
      */
     private $orders;
 
@@ -72,6 +72,18 @@ class Product
         return $this;
     }
 
+    public function getAvailable(): ?bool
+    {
+        return $this->available;
+    }
+
+    public function setAvailable(bool $available): self
+    {
+        $this->available = $available;
+
+        return $this;
+    }
+
     /**
      * @return Collection|Orders[]
      */
@@ -84,7 +96,7 @@ class Product
     {
         if (!$this->orders->contains($order)) {
             $this->orders[] = $order;
-            $order->addProduct($this);
+            $order->setProduct($this);
         }
 
         return $this;
@@ -94,20 +106,11 @@ class Product
     {
         if ($this->orders->contains($order)) {
             $this->orders->removeElement($order);
-            $order->removeProduct($this);
+            // set the owning side to null (unless already changed)
+            if ($order->getProduct() === $this) {
+                $order->setProduct(null);
+            }
         }
-
-        return $this;
-    }
-
-    public function getImage(): ?Image
-    {
-        return $this->image;
-    }
-
-    public function setImage(?Image $image): self
-    {
-        $this->image = $image;
 
         return $this;
     }
