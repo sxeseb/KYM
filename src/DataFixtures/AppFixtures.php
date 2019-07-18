@@ -28,8 +28,9 @@ class AppFixtures extends Fixture
 
         // consigne
         $consigne = new Product();
+        $consigne->setName('consigne');
         $consigne->setPrice(1);
-        $consigne->persist();
+        $manager->persist($consigne);
 
         $manager->flush();
     }
