@@ -10,6 +10,7 @@ class AppFixtures extends Fixture
 {
     public function load(ObjectManager $manager)
     {
+        // carte journée
         $products = [
             "0.5" => ['fruit', 'barre choco'],
             "1.0" => ['knack', 'cake', 'tarte', 'soft', 'eau'],
@@ -24,6 +25,12 @@ class AppFixtures extends Fixture
                     $manager->persist($conso);
             }
         }
+
+        // consigne
+        $consigne = new Product();
+        $consigne->setPrice(1);
+        $consigne->persist();
+
         $manager->flush();
     }
 }
