@@ -22,6 +22,7 @@ class AppFixtures extends Fixture
                     $conso = new Product();
                     $conso->setName($prod);
                     $conso->setPrice((float)$price);
+                    $conso->setAvailable(true);
                     $manager->persist($conso);
             }
         }
@@ -30,6 +31,7 @@ class AppFixtures extends Fixture
         $consigne = new Product();
         $consigne->setName('consigne');
         $consigne->setPrice(1);
+        $consigne->setAvailable(true);
         $manager->persist($consigne);
 
         $manager->flush();

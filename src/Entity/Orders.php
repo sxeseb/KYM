@@ -2,12 +2,10 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="OrdersRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\OrdersRepository")
  */
 class Orders
 {
@@ -19,43 +17,23 @@ class Orders
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $quantity;
-
-    /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Product", inversedBy="orders")
-     * @ORM\JoinColumn(nullable=false)
      */
     private $product;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Player", inversedBy="orders")
-     * @ORM\JoinColumn(nullable=false)
      */
     private $player;
 
-    public function __construct()
-    {
-        $this->product = new ArrayCollection();
-    }
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $quantity;
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getQuantity(): ?int
-    {
-        return $this->quantity;
-    }
-
-    public function setQuantity(int $quantity): self
-    {
-        $this->quantity = $quantity;
-
-        return $this;
     }
 
     public function getProduct(): ?Product
@@ -63,20 +41,9 @@ class Orders
         return $this->product;
     }
 
-    public function addProduct(Product $product): self
+    public function setProduct(?Product $product): self
     {
-        if (!$this->product->contains($product)) {
-            $this->product[] = $product;
-        }
-
-        return $this;
-    }
-
-    public function removeProduct(Product $product): self
-    {
-        if ($this->product->contains($product)) {
-            $this->product->removeElement($product);
-        }
+        $this->product = $product;
 
         return $this;
     }
@@ -93,9 +60,14 @@ class Orders
         return $this;
     }
 
-    public function setProduct(?Product $product): self
+    public function getQuantity(): ?int
     {
-        $this->product = $product;
+        return $this->quantity;
+    }
+
+    public function setQuantity(int $quantity): self
+    {
+        $this->quantity = $quantity;
 
         return $this;
     }
