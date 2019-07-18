@@ -34,7 +34,7 @@ class Player
     private $image;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Order", mappedBy="playerId")
+     * @ORM\OneToMany(targetEntity="Orders", mappedBy="playerId")
      */
     private $orders;
 
@@ -85,14 +85,14 @@ class Player
     }
 
     /**
-     * @return Collection|Order[]
+     * @return Collection|Orders[]
      */
     public function getOrders(): Collection
     {
         return $this->orders;
     }
 
-    public function addOrder(Order $order): self
+    public function addOrder(Orders $order): self
     {
         if (!$this->orders->contains($order)) {
             $this->orders[] = $order;
@@ -102,7 +102,7 @@ class Player
         return $this;
     }
 
-    public function removeOrder(Order $order): self
+    public function removeOrder(Orders $order): self
     {
         if ($this->orders->contains($order)) {
             $this->orders->removeElement($order);

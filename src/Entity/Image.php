@@ -27,17 +27,17 @@ class Image
     private $src;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Player", mappedBy="imageId", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity="App\Entity\Player", mappedBy="image", cascade={"persist", "remove"})
      */
     private $player;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Team", mappedBy="imageId", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity="App\Entity\Team", mappedBy="image", cascade={"persist", "remove"})
      */
     private $teamLogo;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Product", mappedBy="imageId", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity="App\Entity\Product", mappedBy="image", cascade={"persist", "remove"})
      */
     private $product;
 

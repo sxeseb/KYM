@@ -24,7 +24,7 @@ class Product
     private $name;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="float")
      */
     private $price;
 
@@ -34,7 +34,7 @@ class Product
     private $image;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Order", mappedBy="productId")
+     * @ORM\ManyToMany(targetEntity="Orders", mappedBy="product")
      */
     private $orders;
 
@@ -60,53 +60,41 @@ class Product
         return $this;
     }
 
-    public function getPrice(): ?int
+    public function getPrice(): ?float
     {
         return $this->price;
     }
 
-    public function setPrice(int $price): self
+    public function setPrice(float $price): self
     {
         $this->price = $price;
 
         return $this;
     }
 
-    public function getImageId(): ?Image
-    {
-        return $this->imageId;
-    }
-
-    public function setImageId(?Image $imageId): self
-    {
-        $this->imageId = $imageId;
-
-        return $this;
-    }
-
     /**
-     * @return Collection|Order[]
+     * @return Collection|Orders[]
      */
     public function getOrders(): Collection
     {
         return $this->orders;
     }
 
-    public function addOrder(Order $order): self
+    public function addOrder(Orders $order): self
     {
         if (!$this->orders->contains($order)) {
             $this->orders[] = $order;
-            $order->addProductId($this);
+            $order->addProduct($this);
         }
 
         return $this;
     }
 
-    public function removeOrder(Order $order): self
+    public function removeOrder(Orders $order): self
     {
         if ($this->orders->contains($order)) {
             $this->orders->removeElement($order);
-            $order->removeProductId($this);
+            $order->removeProduct($this);
         }
 
         return $this;
