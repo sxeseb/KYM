@@ -5,11 +5,12 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\TeamRepository")
  */
-class Team
+class Team implements UserInterface
 {
     /**
      * @ORM\Id()
@@ -19,17 +20,18 @@ class Team
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=180, unique=true)
      */
-    private $name;
+    private $teamName;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="json")
      */
-    private $role;
+    private $roles = [];
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @var string The hashed password
+     * @ORM\Column(type="string")
      */
     private $password;
 
@@ -44,14 +46,14 @@ class Team
     private $token;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=true)
      */
     private $dateToken;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $tokenActive;
+    private $tokenActive = false;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Player", mappedBy="equipeId")
@@ -65,7 +67,6 @@ class Team
 
     public function __construct()
     {
-        $this->imageId = new ArrayCollection();
         $this->player = new ArrayCollection();
     }
 
@@ -74,33 +75,53 @@ class Team
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getTeamName(): ?string
     {
-        return $this->name;
+        return $this->teamName;
     }
 
-    public function setName(string $name): self
+    public function setTeamName(string $teamName): self
     {
-        $this->name = $name;
+        $this->teamName = $teamName;
 
         return $this;
     }
 
-    public function getRole(): ?string
+    /**
+     * A visual identifier that represents this user.
+     *
+     * @see UserInterface
+     */
+    public function getUsername(): string
     {
-        return $this->role;
+        return (string) $this->teamName;
     }
 
-    public function setRole(string $role): self
+    /**
+     * @see UserInterface
+     */
+    public function getRoles(): array
     {
-        $this->role = $role;
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
 
         return $this;
     }
 
-    public function getPassword(): ?string
+    /**
+     * @see UserInterface
+     */
+    public function getPassword(): string
     {
-        return $this->password;
+        return (string) $this->password;
     }
 
     public function setPassword(string $password): self
@@ -108,6 +129,23 @@ class Team
         $this->password = $password;
 
         return $this;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function getSalt()
+    {
+        // not needed when using the "bcrypt" algorithm in security.yaml
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function eraseCredentials()
+    {
+        // If you store any temporary, sensitive data on the user, clear it here
+        // $this->plainPassword = null;
     }
 
     public function getEmail(): ?string
@@ -139,7 +177,7 @@ class Team
         return $this->dateToken;
     }
 
-    public function setDateToken(\DateTimeInterface $dateToken): self
+    public function setDateToken(?\DateTimeInterface $dateToken): self
     {
         $this->dateToken = $dateToken;
 
@@ -185,18 +223,6 @@ class Team
                 $player->setEquipeId(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getImageId(): ?Image
-    {
-        return $this->imageId;
-    }
-
-    public function setImageId(?Image $imageId): self
-    {
-        $this->imageId = $imageId;
 
         return $this;
     }
