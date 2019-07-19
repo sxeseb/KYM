@@ -11,7 +11,13 @@
                 <div class="col-12">
                     <div class="list-group">
                         {% for team in teams %}
-                            <a href="{{ path('bar', {'teamName' : (team.teamName)}) }}" class="list-group-item list-group-item-action {% if loop.index is odd %}list-group-item-secondary{% endif %}">{{ team.teamName }}</a>
+                            <a href="{{ path('bar', {'teamName' : (team.teamName)}) }}" class="
+                            list-group-item
+                            list-group-item-action
+                            {% if selectedTeam is not empty  and selectedTeam.id == team.id%}
+                            active
+                            {% endif %}
+                            ">{{ team.teamName }}</a>
                         {% endfor %}
                     </div>
                 </div>
@@ -22,7 +28,7 @@
             {% if selectedTeam is not empty %}
                 <div class="list-group col-12">
                 {% for  player in selectedTeam.players%}
-                    <a href="#" class="list-group-item list-group-item-action {% if loop.index is odd %}list-group-item-secondary{% endif %}">{{ player.name }}</a>
+                    <a href="#" class="list-group-item list-group-item-action">{{ player.name }}</a>
                     {% else %}
                     <div>Pas encore de joueurs inscrits</div>
                 {% endfor %}
