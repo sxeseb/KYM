@@ -81,8 +81,17 @@ class TeamAuthenticator extends AbstractFormLoginAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
+        $roles = $token->getUser()->getRoles();
+
+
         if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
             return new RedirectResponse($targetPath);
+        }
+
+        if (in_array('ROLE_ADMIN', $roles)) {
+            return new RedirectResponse($this->urlGenerator->generate('admin_dashboard'));
+        } elseif (in_array('ROLE_STAFF', $roles)) {
+            return new RedirectResponse($this->urlGenerator->generate('bar_index'));
         }
 
         return new RedirectResponse($this->urlGenerator->generate('app_index'));
