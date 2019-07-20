@@ -1,3 +1,11 @@
 #playerForm {
     display: none;
 }
+
+.staff-select-interface {
+    max-height : 100px;
+}
+
+.scrollable {
+    overflow-y:scroll;
+}

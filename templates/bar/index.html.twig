@@ -4,11 +4,11 @@
 
 {% block body %}
 <div class="container-fluid">
-    <div class="row py-5">
+    <div class="row py-5 staff-select-interface">
         <div class="col-3">
             <h3>Equipes</h3>
             <div class="row">
-                <div class="col-12">
+                <div class="col-12 scrollable">
                     <div class="list-group">
                         {% for team in teams %}
                             <a href="{{ path('bar', {'teamName' : (team.teamName)}) }}" class="
@@ -26,9 +26,14 @@
         <div class="col-3">
             <h3>Players</h3>
             {% if selectedTeam is not empty %}
-                <div class="list-group col-12">
+                <div class="list-group col-12 scrollable">
                 {% for  player in selectedTeam.players%}
-                    <a href="#" class="list-group-item list-group-item-action">{{ player.name }}</a>
+                    <a href="{{ path('bar', {'teamName' : (selectedTeam.teamName), 'playerId' : (player.id)}) }}" class="
+                        list-group-item
+                        list-group-item-action
+                        {% if selectedPlayer is not empty  and selectedPlayer.id == player.id%}
+                            active
+                            {% endif %}">{{ player.name }}</a>
                     {% else %}
                     <div>Pas encore de joueurs inscrits</div>
                 {% endfor %}
@@ -40,7 +45,13 @@
             {% endif %}
         </div>
         <div class="col-4">
-
+            {% if selectedPlayer is not empty %}
+            <div class="card">
+                <div class="card-body">
+                    <div>{{ selectedPlayer.name }}</div>
+                </div>
+            </div>
+            {% endif  %}
         </div>
     </div>
 </div>

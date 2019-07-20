@@ -13,14 +13,15 @@ use Symfony\Component\Routing\Annotation\Route;
 class BarController extends AbstractController
 {
     /**
-     * @Route("/bar/{teamName}", name="bar")
+     * @Route("/bar/{teamName}/{playerId}", name="bar")
      */
-    public function index(Request $request, ObjectManager $em, string $teamName = null)
+    public function index(Request $request, ObjectManager $em, string $teamName = null, string $playerId = null)
     {
         $player = new Player();
         $newplayerForm = $this->createForm(NewPlayerType::class, $player);
-        $teams = $em->getRepository(Team::class)->findAll();
+        $teams = $em->getRepository(Team::class)->findBy([], ['teamName' => 'ASC']);
 
+        $selectedPlayer = "";
         $team = "";
         $newplayerForm->handleRequest($request);
 
@@ -35,10 +36,12 @@ class BarController extends AbstractController
 
                 return $this->redirectToRoute('bar', ['teamName' => $teamName]);
             }
+
+            $selectedPlayer = $em->getRepository(Player::class)->findOneBy(['id' => $playerId]);
         }
 
         return $this->render('bar/index.html.twig', [
-            'form' => $newplayerForm->createView(), 'teams' => $teams, 'selectedTeam' => $team
+            'form' => $newplayerForm->createView(), 'teams' => $teams, 'selectedTeam' => $team, 'selectedPlayer' => $selectedPlayer
         ]);
     }
 }
