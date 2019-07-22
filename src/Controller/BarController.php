@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Player;
+use App\Entity\Product;
 use App\Entity\Team;
 use App\Form\NewPlayerType;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -20,6 +21,8 @@ class BarController extends AbstractController
         $player = new Player();
         $newplayerForm = $this->createForm(NewPlayerType::class, $player);
         $teams = $em->getRepository(Team::class)->findBy([], ['teamName' => 'ASC']);
+
+        $produits = $em->getRepository(Product::class)->findAll();
 
         $selectedPlayer = "";
         $team = "";
@@ -41,7 +44,7 @@ class BarController extends AbstractController
         }
 
         return $this->render('bar/index.html.twig', [
-            'form' => $newplayerForm->createView(), 'teams' => $teams, 'selectedTeam' => $team, 'selectedPlayer' => $selectedPlayer
+            'form' => $newplayerForm->createView(), 'teams' => $teams, 'selectedTeam' => $team, 'selectedPlayer' => $selectedPlayer, 'products' => $produits
         ]);
     }
 }
