@@ -1,20 +1,83 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello BarController!{% endblock %}
+{% block title %}Bar - Main{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+<div class="container-fluid bar-container">
+    <div class="row py-5 staff-select-interface">
+        <div class="col-6">
+            <div class="row">
+                <div class="col-6">
+                    <h3>Equipes</h3>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="list-group overflow-auto h-75">
+                                {% for team in teams %}
+                                    <a href="{{ path('bar', {'teamName' : (team.teamName)}) }}" class="
+                                    list-group-item
+                                    list-group-item-action
+                                    {% if selectedTeam is not empty  and selectedTeam.id == team.id%}
+                                    active
+                                    {% endif %}
+                                    ">{{ team.teamName }}</a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <h3>Players</h3>
+                    <div class="row">
+                        <div class="col-12">
+                        {% if selectedTeam is not empty %}
+                            <div class="list-group overflow-auto h-75">
+                            {% for  player in selectedTeam.players%}
+                                <a href="{{ path('bar', {'teamName' : (selectedTeam.teamName), 'playerId' : (player.id)}) }}" class="
+                                    list-group-item
+                                    list-group-item-action
+                                    {% if selectedPlayer is not empty  and selectedPlayer.id == player.id%}
+                                        active
+                                        {% endif %}">{{ player.name }}</a>
+                                {% else %}
+                                <div>Pas encore de joueurs inscrits</div>
+                            {% endfor %}
+                            </div>
+                        </div>
+                        <div class="col-10">
+                            <button id="addPlayerBtn" class="btn btn-success mb-2">+</button>
+                            {% include '_insert/_newPlayerForm.html.twig' %}
+                        </div>
+                    {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    {% if selectedPlayer is not empty %}
+                        <div class="card p-3">
+                            <div class="card-body">
+                                <div>{{ selectedPlayer.name }}</div>
+                            </div>
+                        </div>
+                    {% endif  %}
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="row h-50">
+                {% for product in products %}
+                    <div class="card col-3">
+                        {{ product.name }}
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="row">
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ '/home/sebast/DEV/projets/KYM/src/Controller/BarController.php'|file_link(0) }}">src/Controller/BarController.php</a></code></li>
-        <li>Your template at <code><a href="{{ '/home/sebast/DEV/projets/KYM/templates/bar/index.html.twig'|file_link(0) }}">templates/bar/index.html.twig</a></code></li>
-    </ul>
+            </div>
+        </div>
+    </div>
 </div>
+{% endblock %}
+{% block javascripts %}
+<script src="/assets/js/newplayerbar.js" type="text/javascript"></script>
 {% endblock %}

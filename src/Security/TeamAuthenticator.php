@@ -91,7 +91,7 @@ class TeamAuthenticator extends AbstractFormLoginAuthenticator
         if (in_array('ROLE_ADMIN', $roles)) {
             return new RedirectResponse($this->urlGenerator->generate('admin_dashboard'));
         } elseif (in_array('ROLE_STAFF', $roles)) {
-            return new RedirectResponse($this->urlGenerator->generate('bar_index'));
+            return new RedirectResponse($this->urlGenerator->generate('bar'));
         }
 
         return new RedirectResponse($this->urlGenerator->generate('app_index'));
