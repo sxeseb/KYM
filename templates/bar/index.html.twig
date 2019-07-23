@@ -11,7 +11,7 @@
                     <h3>Equipes</h3>
                     <div class="row">
                         <div class="col-12">
-                            <div class="list-group overflow-auto h-75">
+                            <div class="list-group overflow-auto">
                                 {% for team in teams %}
                                     <a href="{{ path('bar', {'teamName' : (team.teamName)}) }}" class="
                                     list-group-item
@@ -30,7 +30,7 @@
                     <div class="row">
                         <div class="col-12">
                         {% if selectedTeam is not empty %}
-                            <div class="list-group overflow-auto h-75">
+                            <div class="list-group overflow-auto">
                             {% for  player in selectedTeam.players%}
                                 <a href="{{ path('bar', {'teamName' : (selectedTeam.teamName), 'playerId' : (player.id)}) }}" class="
                                     list-group-item
@@ -42,12 +42,12 @@
                                 <div>Pas encore de joueurs inscrits</div>
                             {% endfor %}
                             </div>
+                            <div class="col-10">
+                                <button id="addPlayerBtn" class="btn btn-success mb-2">+</button>
+                                {% include '_insert/_newPlayerForm.html.twig' %}
+                            </div>
+                        {% endif %}
                         </div>
-                        <div class="col-10">
-                            <button id="addPlayerBtn" class="btn btn-success mb-2">+</button>
-                            {% include '_insert/_newPlayerForm.html.twig' %}
-                        </div>
-                    {% endif %}
                     </div>
                 </div>
             </div>
@@ -66,9 +66,12 @@
         <div class="col-6">
             <div class="row h-50">
                 {% for product in products %}
-                    <div class="card col-3">
+                    <a href="#" class="btn btn-light product m-1">
+                        <div>
+                            <img src="https://via.placeholder.com/100">
+                        </div>
                         {{ product.name }}
-                    </div>
+                    </a>
                 {% endfor %}
             </div>
             <div class="row">
