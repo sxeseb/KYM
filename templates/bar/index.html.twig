@@ -3,6 +3,11 @@
 {% block title %}Bar - Main{% endblock %}
 
 {% block body %}
+    {% if selectedPlayer is not empty %}
+        {%  set playerId = selectedPlayer.id %}
+    {% else %}
+        {% set playerId = null %}
+    {% endif %}
 <div class="container-fluid bar-container">
     <div class="row py-5 staff-select-interface">
         <div class="col-6">
@@ -22,6 +27,17 @@
                                     ">{{ team.teamName }}</a>
                                 {% endfor %}
                             </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            {% if selectedPlayer is not empty %}
+                                <div class="card p-3">
+                                    <div class="card-body">
+                                        <div>{{ selectedPlayer.name }}</div>
+                                    </div>
+                                </div>
+                            {% endif  %}
                         </div>
                     </div>
                 </div>
@@ -49,34 +65,49 @@
                         {% endif %}
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-6">
-                    {% if selectedPlayer is not empty %}
-                        <div class="card p-3">
-                            <div class="card-body">
-                                <div>{{ selectedPlayer.name }}</div>
-                            </div>
+                    <div class="row mt-3">
+                        <div class="py-3 col-12">
+                            {% if selectedPlayer is not empty  and app.session.get(selectedPlayer.id) is not null%}
+                                <table class=" table">
+                                    <tbody>
+                                        {% for product in app.session.get(selectedPlayer.id).order %}
+                                            <tr>
+                                                <td>{{ product.name }} </td>
+                                                <td>{{ product.quantity }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                       <tr>
+                                           <td>Total</td>
+                                           <td>{{ app.session.get(selectedPlayer.id).total }}</td>
+                                       </tr>
+                                    </tbody>
+                                </table>
+                                <div class="row justify-content-between">
+                                    <div>
+                                        <a href="#" class="btn btn-danger">Clear</a>
+                                    </div>
+                                    <div>
+                                        <a href="{{ path('resolve_cart', {'id' : (selectedPlayer.id)}) }}" class="btn btn-success">Enregistrer</a>
+                                    </div>
+                                </div>
+                            {% endif %}
                         </div>
-                    {% endif  %}
+                    </div>
                 </div>
             </div>
         </div>
         <div class="col-6">
             <div class="row h-50">
                 {% for product in products %}
-                    <a href="#" class="btn btn-light product m-1">
+                    <a href="{{ path('add_product', {'product' : (product.id), 'player' : (playerId)}) }}" class="btn btn-light product m-1">
                         <div>
-                            <img src="https://via.placeholder.com/100">
+                            <img src="https://via.placeholder.com/100" alt="{{ product.name }}">
                         </div>
                         {{ product.name }}
                     </a>
                 {% endfor %}
             </div>
-            <div class="row">
 
-            </div>
         </div>
     </div>
 </div>

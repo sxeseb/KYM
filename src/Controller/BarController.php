@@ -2,19 +2,22 @@
 
 namespace App\Controller;
 
+use App\Entity\Orders;
 use App\Entity\Player;
 use App\Entity\Product;
 use App\Entity\Team;
 use App\Form\NewPlayerType;
+use App\Service\CartManager;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 class BarController extends AbstractController
 {
     /**
-     * @Route("/bar/{teamName}/{playerId}", name="bar")
+     * @Route("/bar/main/{teamName}/{playerId}", name="bar")
      */
     public function index(Request $request, ObjectManager $em, string $teamName = null, string $playerId = null)
     {
@@ -46,5 +49,49 @@ class BarController extends AbstractController
         return $this->render('bar/index.html.twig', [
             'form' => $newplayerForm->createView(), 'teams' => $teams, 'selectedTeam' => $team, 'selectedPlayer' => $selectedPlayer, 'products' => $produits
         ]);
+    }
+
+    /**
+     * @Route("/bar/addProduct/{product}/{player}", name="add_product")
+     */
+    public function addProduct(Product $product, Session $session, string $player = null)
+    {
+        if ($player != null) {
+            $player = $this->getDoctrine()->getRepository(Player::class)->find($player);
+            /** @var Player $player */
+            $cartManager = new CartManager($session, $player->getId());
+
+            $cartManager->addToCart($product);
+        }
+
+        return $this->redirectToRoute("bar", ['teamName' => $player->getTeam()->getTeamName(), 'playerId' => $player->getId()]);
+    }
+
+    /**
+     * @Route("/bar/resolveCart/{id}", name="resolve_cart")
+     */
+    public function resolveCart(Player $player, Session $session)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $cartManager = new CartManager($session, $player->getId());
+
+        $cart = $cartManager->getCart();
+
+        foreach ($cart['order'] as $prodId => $details) {
+            /** @var Product $prod */
+            $prod = $em->getRepository(Product::class)->find($prodId);
+            $order = new Orders();
+            $order->setPlayer($player);
+            $order->setQuantity($details['quantity']);
+            $order->setProduct($prod);
+            $em->persist($order);
+        }
+
+        $em->flush();
+
+        $cartManager->clearCart();
+
+        return $this->redirectToRoute("bar", ['teamName' => $player->getTeam()->getTeamName(), 'playerId' => $player->getId()]);
     }
 }
