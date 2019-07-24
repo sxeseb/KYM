@@ -2,10 +2,11 @@
 
 namespace App\Service;
 
+use App\Contract\CartManagerInterface;
 use App\Entity\Product;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
-class CartManager
+class CartManager implements CartManagerInterface
 {
     private $session;
 
@@ -16,9 +17,10 @@ class CartManager
 
     public function initCart() :array
     {
-        $playerCart = [];
-        $playerCart['total'] = 0;
-        $playerCart['order'] = [];
+        $playerCart = [
+            'total' => 0,
+            'order' => []
+        ];
 
         return $playerCart;
     }
@@ -46,8 +48,6 @@ class CartManager
 
     public function getCart(int $playerId) :array
     {
-        $cart = $this->session->get($playerId);
-
-        return $cart;
+        return $this->session->get($playerId);
     }
 }

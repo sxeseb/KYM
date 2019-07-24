@@ -7,7 +7,7 @@ use App\Entity\Player;
 use App\Entity\Product;
 use App\Entity\Team;
 use App\Form\NewPlayerType;
-use App\Service\CartManager;
+use App\Contract\CartManagerInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -53,7 +53,7 @@ class BarController extends AbstractController
     /**
      * @Route("/bar/addProduct/{product}/{player}", name="add_product")
      */
-    public function addProduct(Product $product, CartManager $cartManager, string $player = null)
+    public function addProduct(Product $product, CartManagerInterface $cartManager, string $player = null)
     {
         if ($player != null) {
             $player = $this->getDoctrine()->getRepository(Player::class)->find($player);
@@ -68,10 +68,9 @@ class BarController extends AbstractController
     /**
      * @Route("/bar/resolveCart/{id}", name="resolve_cart")
      */
-    public function resolveCart(Player $player, CartManager $cartManager)
+    public function resolveCart(Player $player, CartManagerInterface $cartManager)
     {
         $em = $this->getDoctrine()->getManager();
-
 
         $cart = $cartManager->getCart($player->getId());
 
@@ -96,7 +95,7 @@ class BarController extends AbstractController
     /**
      * @Route("/bar/clearCart/{id}", name="clear_cart")
      */
-    public function clearCart(Player $player, CartManager $cartManager)
+    public function clearCart(Player $player, CartManagerInterface $cartManager)
     {
         $cartManager->clearCart($player->getId());
 
