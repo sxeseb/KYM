@@ -84,7 +84,7 @@
                                 </table>
                                 <div class="row justify-content-between">
                                     <div>
-                                        <a href="#" class="btn btn-danger">Clear</a>
+                                        <a href="{{ path('clear_cart', {'id' : (selectedPlayer.id)}) }}" class="btn btn-outline-danger">Clear</a>
                                     </div>
                                     <div>
                                         <a href="{{ path('resolve_cart', {'id' : (selectedPlayer.id)}) }}" class="btn btn-success">Enregistrer</a>

@@ -12,7 +12,6 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\Session\Session;
 
 class BarController extends AbstractController
 {
@@ -54,14 +53,13 @@ class BarController extends AbstractController
     /**
      * @Route("/bar/addProduct/{product}/{player}", name="add_product")
      */
-    public function addProduct(Product $product, Session $session, string $player = null)
+    public function addProduct(Product $product, CartManager $cartManager, string $player = null)
     {
         if ($player != null) {
             $player = $this->getDoctrine()->getRepository(Player::class)->find($player);
             /** @var Player $player */
-            $cartManager = new CartManager($session, $player->getId());
 
-            $cartManager->addToCart($product);
+            $cartManager->addToCart($product, $player->getId());
         }
 
         return $this->redirectToRoute("bar", ['teamName' => $player->getTeam()->getTeamName(), 'playerId' => $player->getId()]);
@@ -70,13 +68,12 @@ class BarController extends AbstractController
     /**
      * @Route("/bar/resolveCart/{id}", name="resolve_cart")
      */
-    public function resolveCart(Player $player, Session $session)
+    public function resolveCart(Player $player, CartManager $cartManager)
     {
         $em = $this->getDoctrine()->getManager();
 
-        $cartManager = new CartManager($session, $player->getId());
 
-        $cart = $cartManager->getCart();
+        $cart = $cartManager->getCart($player->getId());
 
         foreach ($cart['order'] as $prodId => $details) {
             /** @var Product $prod */
@@ -90,7 +87,18 @@ class BarController extends AbstractController
 
         $em->flush();
 
-        $cartManager->clearCart();
+        $cartManager->clearCart($player->getId());
+
+        return $this->redirectToRoute("bar", ['teamName' => $player->getTeam()->getTeamName(), 'playerId' => $player->getId()]);
+    }
+
+
+    /**
+     * @Route("/bar/clearCart/{id}", name="clear_cart")
+     */
+    public function clearCart(Player $player, CartManager $cartManager)
+    {
+        $cartManager->clearCart($player->getId());
 
         return $this->redirectToRoute("bar", ['teamName' => $player->getTeam()->getTeamName(), 'playerId' => $player->getId()]);
     }

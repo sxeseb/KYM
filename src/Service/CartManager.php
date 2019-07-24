@@ -8,12 +8,10 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 class CartManager
 {
     private $session;
-    private $playerId;
 
-    public function __construct(SessionInterface $session, int $playerId)
+    public function __construct(SessionInterface $session)
     {
         $this->session = $session;
-        $this->playerId = $playerId;
     }
 
     public function initCart() :array
@@ -25,9 +23,9 @@ class CartManager
         return $playerCart;
     }
 
-    public function addToCart(Product $product) :void
+    public function addToCart(Product $product, int $playerId) :void
     {
-        $cart = $this->session->get($this->playerId, $this->initCart());
+        $cart = $this->session->get($playerId, $this->initCart());
 
         if (key_exists($product->getId(), $cart['order'])) {
             $cart['order'][$product->getId()]['quantity'] += 1;
@@ -38,17 +36,17 @@ class CartManager
 
         $cart['total'] += $product->getPrice();
 
-        $this->session->set($this->playerId, $cart);
+        $this->session->set($playerId, $cart);
     }
 
-    public function clearCart() :void
+    public function clearCart(int $playerId) :void
     {
-        $this->session->remove($this->playerId);
+        $this->session->remove($playerId);
     }
 
-    public function getCart() :array
+    public function getCart(int $playerId) :array
     {
-        $cart = $this->session->get($this->playerId);
+        $cart = $this->session->get($playerId);
 
         return $cart;
     }
