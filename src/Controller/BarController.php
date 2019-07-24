@@ -42,6 +42,7 @@ class BarController extends AbstractController
                 return $this->redirectToRoute('bar', ['teamName' => $teamName]);
             }
 
+            /** @var Player $selectedPlayer */
             $selectedPlayer = $em->getRepository(Player::class)->findOneBy(['id' => $playerId]);
         }
 

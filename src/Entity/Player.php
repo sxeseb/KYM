@@ -114,4 +114,30 @@ class Player
 
         return $this;
     }
+
+    // Permet de récupérer la somme due par un joueur
+    public function getDueCheck() :float
+    {
+        $total = 0;
+        foreach ($this->getOrders() as $order) {
+            if ($order->getProduct()->getName() !== 'consigne') {
+                $total += $order->getQuantity() * $order->getProduct()->getPrice();
+            }
+        }
+
+        return $total;
+    }
+
+    // Permet de récupérer le nombre de consigne non rendues par un joueur
+    public function getCountConsigne() :int
+    {
+        $count = 0;
+        foreach ($this->getOrders() as $order) {
+            if ($order->getProduct()->getName() === 'consigne') {
+                $count+= $order->getQuantity();
+            }
+        }
+
+        return $count;
+    }
 }
