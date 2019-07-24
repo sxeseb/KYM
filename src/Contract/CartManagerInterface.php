@@ -3,6 +3,7 @@
 
 namespace App\Contract;
 
+use App\Entity\Player;
 use App\Entity\Product;
 
 interface CartManagerInterface
@@ -30,4 +31,9 @@ interface CartManagerInterface
      * Récupération du panier sous forme d'array
      */
     public function getCart(int $playerId) :array;
+
+    /**
+     * Enregistrement du contenu du panier en base dans un objet Orders puis nettoyage du panier
+     */
+    public function resolveCart(Player $player) :void;
 }

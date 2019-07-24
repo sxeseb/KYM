@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Orders;
 use App\Entity\Player;
 use App\Entity\Product;
 use App\Entity\Team;
@@ -71,23 +70,7 @@ class BarController extends AbstractController
      */
     public function resolveCart(Player $player, CartManagerInterface $cartManager)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $cart = $cartManager->getCart($player->getId());
-
-        foreach ($cart['order'] as $prodId => $details) {
-            /** @var Product $prod */
-            $prod = $em->getRepository(Product::class)->find($prodId);
-            $order = new Orders();
-            $order->setPlayer($player);
-            $order->setQuantity($details['quantity']);
-            $order->setProduct($prod);
-            $em->persist($order);
-        }
-
-        $em->flush();
-
-        $cartManager->clearCart($player->getId());
+        $cartManager->resolveCart($player);
 
         return $this->redirectToRoute("bar", ['teamName' => $player->getTeam()->getTeamName(), 'playerId' => $player->getId()]);
     }
