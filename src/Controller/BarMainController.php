@@ -6,7 +6,6 @@ use App\Entity\Player;
 use App\Entity\Product;
 use App\Entity\Team;
 use App\Form\NewPlayerType;
-use App\Service\ConsigneManager;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -48,48 +47,5 @@ class BarMainController extends AbstractController
         return $this->render('bar/index.html.twig', [
             'form' => $newplayerForm->createView(), 'teams' => $teams, 'selectedTeam' => $team, 'selectedPlayer' => $selectedPlayer, 'products' => $produits
         ]);
-    }
-
-
-    /**
-     * @Route("/bar/consigne/add/{player}", name="consigne_add")
-     */
-    public function addConsigne(ConsigneManager $consigneManager, int $player = null)
-    {
-        $playerId = "";
-        $team = "";
-
-        if ($player != null) {
-            /** @var Player $player */
-            $player = $this->getDoctrine()->getRepository(Player::class)->find($player);
-
-            $consigneManager->addConsigne($player);
-
-            $team = $player->getTeam()->getTeamName();
-            $playerId = $player->getId();
-        }
-
-        return $this->redirectToRoute("bar", ['teamName' => $team, 'playerId' => $playerId]);
-    }
-
-    /**
-     * @Route("/bar/consigne/remove/{player}", name="consigne_remove")
-     */
-    public function removeConsigne(ConsigneManager $consigneManager, int $player = null)
-    {
-        $playerId = "";
-        $team = "";
-
-        if ($player != null) {
-            /** @var Player $player */
-            $player = $this->getDoctrine()->getRepository(Player::class)->find($player);
-
-            $consigneManager->removeConsigne($player);
-
-            $team = $player->getTeam()->getTeamName();
-            $playerId = $player->getId();
-        }
-
-        return $this->redirectToRoute("bar", ['teamName' => $team, 'playerId' => $playerId]);
     }
 }

@@ -4,10 +4,11 @@
 namespace App\Service;
 
 
+use App\Contract\ConsigneManagerInterface;
 use App\Entity\Player;
 use Doctrine\ORM\EntityManagerInterface;
 
-class ConsigneManager
+class ConsigneManager implements ConsigneManagerInterface
 {
     private $em;
 

@@ -27,3 +27,5 @@ services:
     # please note that last definitions always *replace* previous ones
 
     App\Contract\CartManagerInterface : '@App\Service\CartManager'
+
+    App\Contract\ConsigneManagerInterface : '@App\Service\ConsigneManager'

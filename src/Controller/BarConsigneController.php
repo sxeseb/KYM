@@ -2,19 +2,24 @@
 
 namespace App\Controller;
 
+use App\Contract\ConsigneManagerInterface;
 use App\Entity\Player;
-use App\Entity\Product;
-use App\Entity\Team;
-use App\Form\NewPlayerType;
-use App\Service\ConsigneManager;
-use Doctrine\Common\Persistence\ObjectManager;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
 class BarConsigneController extends AbstractController
 {
-    public function addConsigne(ConsigneManager $consigneManager, int $player = null)
+    private $consigneManager;
+
+    public function __construct(ConsigneManagerInterface $consigneManager)
+    {
+        $this->consigneManager = $consigneManager;
+    }
+
+    /**
+     * @Route("/bar/consigne/add/{player}", name="consigne_add")
+     */
+    public function addConsigne(int $player = null)
     {
         $playerId = "";
         $team = "";
@@ -23,7 +28,7 @@ class BarConsigneController extends AbstractController
             /** @var Player $player */
             $player = $this->getDoctrine()->getRepository(Player::class)->find($player);
 
-            $consigneManager->addConsigne($player);
+            $this->consigneManager->addConsigne($player);
 
             $team = $player->getTeam()->getTeamName();
             $playerId = $player->getId();
@@ -35,7 +40,7 @@ class BarConsigneController extends AbstractController
     /**
      * @Route("/bar/consigne/remove/{player}", name="consigne_remove")
      */
-    public function removeConsigne(ConsigneManager $consigneManager, int $player = null)
+    public function removeConsigne(int $player = null)
     {
         $playerId = "";
         $team = "";
@@ -44,7 +49,7 @@ class BarConsigneController extends AbstractController
             /** @var Player $player */
             $player = $this->getDoctrine()->getRepository(Player::class)->find($player);
 
-            $consigneManager->removeConsigne($player);
+            $this->consigneManager->removeConsigne($player);
 
             $team = $player->getTeam()->getTeamName();
             $playerId = $player->getId();

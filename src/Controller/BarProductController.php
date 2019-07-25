@@ -11,11 +11,17 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class BarProductController extends AbstractController
 {
+    private $cartManager;
+
+    public function __construct(CartManagerInterface $cartManager)
+    {
+        $this->cartManager = $cartManager;
+    }
 
     /**
      * @Route("/bar/addProduct/{product}/{player}", name="add_product")
      */
-    public function addProduct(Product $product, CartManagerInterface $cartManager, int $player = null)
+    public function addProduct(Product $product, int $player = null)
     {
         $playerId = "";
         $team = "";
@@ -23,7 +29,7 @@ class BarProductController extends AbstractController
         if ($player != null) {
             $player = $this->getDoctrine()->getRepository(Player::class)->find($player);
             /** @var Player $player */
-            $cartManager->addToCart($product, $player->getId());
+            $this->cartManager->addToCart($product, $player->getId());
 
             $team = $player->getTeam()->getTeamName();
             $playerId = $player->getId();
@@ -35,9 +41,9 @@ class BarProductController extends AbstractController
     /**
      * @Route("/bar/resolveCart/{id}", name="resolve_cart")
      */
-    public function resolveCart(Player $player, CartManagerInterface $cartManager)
+    public function resolveCart(Player $player)
     {
-        $cartManager->resolveCart($player);
+        $this->cartManager->resolveCart($player);
 
         return $this->redirectToRoute("bar", ['teamName' => $player->getTeam()->getTeamName(), 'playerId' => $player->getId()]);
     }
@@ -46,9 +52,9 @@ class BarProductController extends AbstractController
     /**
      * @Route("/bar/clearCart/{id}", name="clear_cart")
      */
-    public function clearCart(Player $player, CartManagerInterface $cartManager)
+    public function clearCart(Player $player)
     {
-        $cartManager->clearCart($player->getId());
+        $this->cartManager->clearCart($player->getId());
 
         return $this->redirectToRoute("bar", ['teamName' => $player->getTeam()->getTeamName(), 'playerId' => $player->getId()]);
     }
