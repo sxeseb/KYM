@@ -7,6 +7,7 @@ use App\Entity\Product;
 use App\Entity\Team;
 use App\Form\NewPlayerType;
 use App\Contract\CartManagerInterface;
+use App\Service\ConsigneManager;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -53,16 +54,21 @@ class BarController extends AbstractController
     /**
      * @Route("/bar/addProduct/{product}/{player}", name="add_product")
      */
-    public function addProduct(Product $product, CartManagerInterface $cartManager, string $player = null)
+    public function addProduct(Product $product, CartManagerInterface $cartManager, int $player = null)
     {
+        $playerId = "";
+        $team = "";
+
         if ($player != null) {
             $player = $this->getDoctrine()->getRepository(Player::class)->find($player);
             /** @var Player $player */
-
             $cartManager->addToCart($product, $player->getId());
+
+            $team = $player->getTeam()->getTeamName();
+            $playerId = $player->getId();
         }
 
-        return $this->redirectToRoute("bar", ['teamName' => $player->getTeam()->getTeamName(), 'playerId' => $player->getId()]);
+        return $this->redirectToRoute("bar", ['teamName' => $team, 'playerId' => $playerId]);
     }
 
     /**
@@ -84,5 +90,47 @@ class BarController extends AbstractController
         $cartManager->clearCart($player->getId());
 
         return $this->redirectToRoute("bar", ['teamName' => $player->getTeam()->getTeamName(), 'playerId' => $player->getId()]);
+    }
+
+    /**
+     * @Route("/bar/consigne/add/{player}", name="consigne_add")
+     */
+    public function addConsigne(ConsigneManager $consigneManager, int $player = null)
+    {
+        $playerId = "";
+        $team = "";
+
+        if ($player != null) {
+            /** @var Player $player */
+            $player = $this->getDoctrine()->getRepository(Player::class)->find($player);
+
+            $consigneManager->addConsigne($player);
+
+            $team = $player->getTeam()->getTeamName();
+            $playerId = $player->getId();
+        }
+
+        return $this->redirectToRoute("bar", ['teamName' => $team, 'playerId' => $playerId]);
+    }
+
+    /**
+     * @Route("/bar/consigne/remove/{player}", name="consigne_remove")
+     */
+    public function removeConsigne(ConsigneManager $consigneManager, int $player = null)
+    {
+        $playerId = "";
+        $team = "";
+
+        if ($player != null) {
+            /** @var Player $player */
+            $player = $this->getDoctrine()->getRepository(Player::class)->find($player);
+
+            $consigneManager->removeConsigne($player);
+
+            $team = $player->getTeam()->getTeamName();
+            $playerId = $player->getId();
+        }
+
+        return $this->redirectToRoute("bar", ['teamName' => $team, 'playerId' => $playerId]);
     }
 }
