@@ -28,7 +28,7 @@ class BarMainController extends AbstractController
         $team = "";
         $newplayerForm->handleRequest($request);
 
-        if($teamName != null) {
+        if ($teamName != null) {
             $team = $em->getRepository(Team::class)->findOneBy(['teamName' => $teamName]);
 
             if ($newplayerForm->isSubmitted() && $newplayerForm->isValid()) {
