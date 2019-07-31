@@ -36,7 +36,7 @@
                                     <div class="card-body">
                                         <div>{{ selectedPlayer.name }}</div>
                                         <div>Total : {{ selectedPlayer.dueCheck }}</div>
-                                        <div>Nombre de consignes : {{ selectedPlayer.countConsigne }}</div>
+                                        <div>Nombre de consignes : {{ selectedPlayer.consignes }}</div>
                                     </div>
                                 </div>
                             {% endif  %}
@@ -99,7 +99,7 @@
             </div>
         </div>
         <div class="col-6">
-            <div class="row h-50">
+            <div class="row mb-4">
                 {% for product in products %}
                     <a href="{{ path('add_product', {'product' : (product.id), 'player' : (playerId)}) }}" class="btn btn-light product m-1">
                         <div>
@@ -109,11 +109,25 @@
                     </a>
                 {% endfor %}
             </div>
+            <div class="row justify-content-around">
+                <a href="{{ path('consigne_remove', {'player' : (playerId)}) }}" class="btn btn-light product m-1">
+                    <div>
+                        <img src="https://via.placeholder.com/100" alt="">
+                    </div>
+                    consigne -1
+                </a>
+                <a href="{{ path('consigne_add', {'player' : (playerId)}) }}" class="btn btn-light product m-1">
+                    <div>
+                        <img src="https://via.placeholder.com/100" alt="">
+                    </div>
+                    consigne +1
+                </a>
+            </div>
 
         </div>
     </div>
 </div>
 {% endblock %}
 {% block javascripts %}
-<script src="/assets/js/newplayerbar.js" type="text/javascript"></script>
+    <script src="/assets/js/newplayerbar.js" type="text/javascript"></script>
 {% endblock %}

@@ -38,6 +38,11 @@ class Player
      */
     private $picture;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $consignes = 0;
+
     public function __construct()
     {
         $this->orders = new ArrayCollection();
@@ -120,24 +125,21 @@ class Player
     {
         $total = 0;
         foreach ($this->getOrders() as $order) {
-            if ($order->getProduct()->getName() !== 'consigne') {
-                $total += $order->getQuantity() * $order->getProduct()->getPrice();
-            }
+            $total += $order->getQuantity() * $order->getProduct()->getPrice();
         }
 
         return $total;
     }
 
-    // Permet de récupérer le nombre de consigne non rendues par un joueur
-    public function getCountConsigne() :int
+    public function getConsignes(): ?int
     {
-        $count = 0;
-        foreach ($this->getOrders() as $order) {
-            if ($order->getProduct()->getName() === 'consigne') {
-                $count+= $order->getQuantity();
-            }
-        }
+        return $this->consignes;
+    }
 
-        return $count;
+    public function setConsignes(int $consignes): self
+    {
+        $this->consignes = $consignes;
+
+        return $this;
     }
 }

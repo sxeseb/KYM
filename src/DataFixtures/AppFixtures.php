@@ -19,20 +19,13 @@ class AppFixtures extends Fixture
 
         foreach ($products as $price => $prods) {
             foreach($prods as $prod) {
-                    $conso = new Product();
-                    $conso->setName($prod);
-                    $conso->setPrice((float)$price);
-                    $conso->setAvailable(true);
-                    $manager->persist($conso);
+                $conso = new Product();
+                $conso->setName($prod);
+                $conso->setPrice((float)$price);
+                $conso->setAvailable(true);
+                $manager->persist($conso);
             }
         }
-
-        // consigne
-        $consigne = new Product();
-        $consigne->setName('consigne');
-        $consigne->setPrice(1);
-        $consigne->setAvailable(true);
-        $manager->persist($consigne);
 
         $manager->flush();
     }
